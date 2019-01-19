@@ -1,0 +1,39 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+
+<div class="col-offset-4 col-md-4 mdl-card mdl-shadow--2dp">
+    @if (Model.ModelState.ErrorCount > 0)
+    {
+        <div asp-validation-summary="ModelOnly" style="min-height:0; margin-top:4%; width:100%" class="mdl-card mdl-shadow--4dp alert-danger"></div>
+    }
+    <section>
+        <form method="post">
+            <div class="mdl-textfield mdl-js-textfield">
+                <label asp-for="Input.Email" class="mdl-textfield__label"></label>
+                <input asp-for="Input.Email" class="mdl-textfield__input" />
+            </div>
+            <br />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+            <div class="mdl-textfield mdl-js-textfield">
+                <label asp-for="Input.Password" class="mdl-textfield__label"></label>
+                <input asp-for="Input.Password" class="mdl-textfield__input" />
+            </div>
+            <br />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+            <div class="row">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--primary">Login</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

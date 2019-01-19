@@ -13,4 +13,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SEContactManager.Infrastructure\SEContactManager.Infrastructure.csproj">
+      <Private>true</Private>
+    </ProjectReference>
+  </ItemGroup>
+
 </Project>

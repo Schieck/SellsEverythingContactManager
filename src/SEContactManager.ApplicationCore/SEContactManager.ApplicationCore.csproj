@@ -5,9 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entity\" />
-    <Folder Include="Interfaces\" />
+    <Folder Include="Interfaces\Services\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.1.1" />
   </ItemGroup>
 
 </Project>

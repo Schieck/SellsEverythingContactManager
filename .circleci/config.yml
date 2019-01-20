@@ -6,4 +6,4 @@ jobs:
     steps:
       - checkout
       - run: find .
-      - run: dotnet build "SEContactManager.UI.Web.csproj" -c Release -o /app
+      - run: dotnet build "./src/SEContactManager.UI.Web.sln" -c Release -o /app

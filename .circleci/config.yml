@@ -2,8 +2,8 @@ version: 2
 jobs:
   build:
     docker:
-      - image: microsoft/dotnet:2.1.300-preview2-sdk-alpine
+      - image: microsoft/dotnet:2.1-aspnetcore-runtime
     steps:
       - checkout
       - run: find .
-      - run: dotnet build "SEContactManager.UI.Web.sln" -c Release -o /app
+      - run: dotnet build "SEContactManager.UI.Web.csproj" -c Release -o /app

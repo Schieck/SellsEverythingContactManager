@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+<div style="width:100%; height:100%">
+    <div style="width:inherit; margin-top: 15pt; padding: 15pt;" class="col-offset-2 col-md-10 mdl-card mdl-shadow--2dp">
+        <h2>Account Settings</h2>
+        <hr />
+        <div class="row">
+            <div class="col-md-3">
+                <partial name="_ManageNav" />
+            </div>
+            <div class="col-md-9">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

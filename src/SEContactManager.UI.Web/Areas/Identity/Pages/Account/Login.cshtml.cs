@@ -91,7 +91,7 @@ namespace SEContactManager.UI.Web.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "The email and/or password entered is invalid. Please try again.");
                     return Page();
                 }
             }

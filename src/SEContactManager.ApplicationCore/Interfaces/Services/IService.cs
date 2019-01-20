@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace SEContactManager.ApplicationCore.Interfaces.Repositories
+namespace SEContactManager.ApplicationCore.Interfaces.Services
 {
-    public interface IRepository<Type> where Type : class
+    public interface IService<Type>
     {
         Type Add(Type entity);
         void Update(Type entity);

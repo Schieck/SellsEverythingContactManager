@@ -13,12 +13,12 @@
         <p>
             <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
         </p>
-        <form asp-page="DownloadPersonalData" method="post" class="form-group">
-            <button class="btn btn-default" type="submit">Download</button>
-        </form>
-        <p>
-            <a asp-page="DeletePersonalData" class="btn btn-default">Delete</a>
-        </p>
+            <form asp-page="DownloadPersonalData" method="post" class="form-group">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" type="submit">Download</button>
+
+                <a asp-page="DeletePersonalData" style="color: #a94442; background-color: #d67d7c;" class="mdl-button mdl-js-button">Delete Personal Data</a>
+
+            </form>
     </div>
 </div>
 

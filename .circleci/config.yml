@@ -6,7 +6,5 @@ jobs:
     steps:
       - checkout
       - run: find .
-      - run: dotnet restore
-      - run: dotnet build
-      - run: dotnet test --no-build Build.Tests
-
+      - run: dotnet restore "./src/SEContactManager.UI.Web/SEContactManager.UI.Web.csproj"
+      - run: dotnet build "SEContactManager.UI.Web.csproj" -c Release -o /app

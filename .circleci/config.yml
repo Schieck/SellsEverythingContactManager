@@ -2,18 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-      - image: microsoft/dotnet:sdk
-    working_directory: /build
+      - image: microsoft/dotnet:2.1.300-preview2-sdk-alpine
     steps:
       - checkout
-      - run:
-          name: Building the project
-          name: Moving to the project directory
-          command: |
-            pushd ./src/SEContactManager.UI.Web
-            dotnet build "SEContactManager.UI.Web.csproj" -c Release -o /app
-            popd
-      - run:
-          name: Run result
-          command: dotnet out/SEContactManager.UI.Web.dll
+      - run: find .
+      - run: dotnet restore
+      - run: dotnet build
+      - run: dotnet test --no-build Build.Tests
 

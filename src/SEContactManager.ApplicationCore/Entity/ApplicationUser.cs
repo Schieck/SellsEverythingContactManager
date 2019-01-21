@@ -7,6 +7,6 @@ namespace SEContactManager.ApplicationCore.Entity
 {
     public class ApplicationUser : IdentityUser
     {
-        public ICollection<Customer> Customers { get; set; }
+        public ICollection<Customer> Customer { get; set; }
     }
 }

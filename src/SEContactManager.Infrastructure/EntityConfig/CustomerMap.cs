@@ -11,10 +11,6 @@ namespace SEContactManager.Infrastructure.EntityConfig
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-            builder
-                .HasOne(model => model.User)
-                .WithMany(model => model.Customers)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .Property(model => model.Name)

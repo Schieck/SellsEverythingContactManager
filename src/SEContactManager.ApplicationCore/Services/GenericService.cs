@@ -16,22 +16,22 @@ namespace SEContactManager.ApplicationCore.Services
             _repository = repository;
         }
 
-        public Type Add(Type entity)
+        public virtual Type Add(Type entity)
         {
             return _repository.Add(entity);
         }
 
-        public IEnumerable<Type> Find(Expression<Func<Type, bool>> filter)
+        public virtual IEnumerable<Type> Find(Expression<Func<Type, bool>> filter)
         {
             return _repository.Find(filter);
         }
 
-        public IEnumerable<Type> FindAll()
+        public virtual IEnumerable<Type> FindAll()
         {
             return _repository.FindAll();
         }
 
-        public Type FindById(int id)
+        public virtual Type FindById(int id)
         {
             return _repository.FindById(id);
         }

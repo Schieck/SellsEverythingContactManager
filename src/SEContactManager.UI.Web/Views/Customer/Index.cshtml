@@ -1,0 +1,103 @@
+﻿@using SEContactManager.ApplicationCore.Entity
+@model IEnumerable<SEContactManager.ApplicationCore.Entity.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div style="width:100%; height:100%; padding:15pt;" class="col-md-12">
+    <div style="width: inherit; padding:15pt;" class="mdl-card mdl-shadow--2dp">
+        <h2>Contacts</h2>
+        <hr />
+        <row style="width:100%; height:100%; padding:15pt;" class="col-md-12">
+            <div class="col-md-2">
+                <a asp-action="Create" class="mdl-button mdl-js-ripple-effect mdl-js-button mdl-button--fab mdl-button--colored">
+                    <i class="material-icons">add</i>
+                </a>
+            </div>
+            <div class="col-md-10">
+
+                @Html.Partial("_PartialCustomerSearch", new CustomerSearch())
+            </div>
+        </row>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Classification)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Phone)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.City)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.City.Region)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LastPurchase)
+                    </th>
+                    @if (User.IsInRole(Enum.GetName(typeof(RoleTypes), RoleTypes.Administrator)))
+                    {
+                        <th>
+                            @Html.DisplayNameFor(model => model.Owner)
+                        </th>
+                    }
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Gender)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastPurchase)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Classification)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City.Region.Name)
+                        </td>
+                        @if (User.IsInRole(Enum.GetName(typeof(RoleTypes), RoleTypes.Administrator)))
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Owner.UserName)
+                            </td>
+                        }
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored">
+                                <i class="material-icons">edit</i>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored">
+                                <i class="material-icons">details</i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored">
+                                <i class="material-icons">delete</i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+﻿@model SEContactManager.ApplicationCore.Entity.Customer
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div style="width:100%; height:100%; padding:15pt;" class="col-md-12">
+    <div style="width: inherit; padding:15pt;" class="mdl-card mdl-shadow--2dp">
+        <h2>Delete Contact</h2>
+        <div>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Phone)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.LastPurchase)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.LastPurchase)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Classification)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Classification)
+                </dd>
+            </dl>
+            <h4>Do you really want delete this contact?</h4>
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Delete Contact Permanently" style="color: #a94442; background-color: #d67d7c;" class="mdl-button mdl-js-button" />
+                <a asp-action="Index" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored"><i class="material-icons">undo</a>
+            </form>
+        </div>
+    </div>
+</div>

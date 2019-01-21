@@ -15,9 +15,12 @@ namespace SEContactManager.Infrastructure.Data
         {
         }
 
+        public DbSet<Customer> Customers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new CustomerMap());
+        
             base.OnModelCreating(builder);
         }
     }

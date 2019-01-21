@@ -47,10 +47,11 @@ namespace SEContactManager.UI.Web
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddDefaultUI()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -63,21 +64,28 @@ namespace SEContactManager.UI.Web
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 8;
-                options.Password.RequiredUniqueChars = 1;               
+                options.Password.RequiredUniqueChars = 1;
             });
-            
+
             services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                                  .RequireAuthenticatedUser()
                                  .Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
-            })            
+            })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/LogOut";
             });
 
             #endregion
@@ -88,7 +96,7 @@ namespace SEContactManager.UI.Web
             services.AddScoped<ICustomerService, CustomerService>();
 
             #endregion Dependency Injection Configuration
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,7 +123,7 @@ namespace SEContactManager.UI.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");                
+                    template: "{controller=Customer}/{action=Index}/{id?}");
             });
 
             CreateRoles(serviceProvider).Wait();
@@ -138,17 +146,18 @@ namespace SEContactManager.UI.Web
                     roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
-           
+
 
             //Here you could create a super user who will maintain the web app
             IList<DefaultUserModel> defaultUsers = new List<DefaultUserModel>();
 
-            defaultUsers.Add(                 
-                new DefaultUserModel() {
+            defaultUsers.Add(
+                new DefaultUserModel()
+                {
                     User = new ApplicationUser()
-                                {
-                                    Email = Configuration["DefaultUsers:Administrator:Email"],
-                                    UserName = Configuration["DefaultUsers:Administrator:Email"]
+                    {
+                        Email = Configuration["DefaultUsers:Administrator:Email"],
+                        UserName = Configuration["DefaultUsers:Administrator:Email"]
                     },
                     Password = Configuration["DefaultUsers:Administrator:Password"],
                     RoleType = RoleTypes.Administrator
@@ -179,8 +188,9 @@ namespace SEContactManager.UI.Web
                    RoleType = RoleTypes.Seller
                });
 
-            foreach (var user in defaultUsers) {
-                      
+            foreach (var user in defaultUsers)
+            {
+
                 //Ensure you have these values in your appsettings.json file
                 string userPWD = user.Password;
                 var _user = await UserManager.FindByEmailAsync(user.User.Email);
@@ -191,7 +201,7 @@ namespace SEContactManager.UI.Web
                     var createPowerUser = await UserManager.CreateAsync(user.User, userPWD);
                     if (createPowerUser.Succeeded)
                     {
-                        
+
 
                         switch (user.RoleType)
                         {
@@ -204,7 +214,7 @@ namespace SEContactManager.UI.Web
                             default:
                                 await UserManager.AddToRoleAsync(user.User, Enum.GetName(typeof(RoleTypes), RoleTypes.Seller));
                                 break;
-                        }                       
+                        }
                     }
                 }
             }

@@ -12,4 +12,8 @@
         <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a id="external-login" asp-page="./ExternalLogins">External logins</a></li>
     }
     <li class="@ManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-page="./PersonalData">Personal data</a></li>
+    @if (User.IsInRole(Enum.GetName(typeof(RoleTypes), RoleTypes.Administrator)))
+    {
+        <li class="@ManageNavPages.PageNavClass(ViewContext, "Register")"><a asp-page="../Register">Register Seller</a></li>
+    }
 </ul>

@@ -1,4 +1,5 @@
-﻿using SEContactManager.ApplicationCore.Interfaces.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using SEContactManager.ApplicationCore.Interfaces.Repositories;
 using SEContactManager.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -42,13 +43,13 @@ namespace SEContactManager.Infrastructure.Repository
         public virtual void Remove(Type entity)
         {
             _dbContext.Set<Type>().Remove(entity);
+            _dbContext.SaveChangesAsync();
         }
 
-        public void Update(Type entity)
+        public virtual void Update(Type entity)
         {
-            _dbContext.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.SaveChangesAsync();
-
         }
     }
 }

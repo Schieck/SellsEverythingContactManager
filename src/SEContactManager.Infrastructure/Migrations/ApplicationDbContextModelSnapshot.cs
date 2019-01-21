@@ -180,13 +180,39 @@ namespace SEContactManager.Infrastructure.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("SEContactManager.ApplicationCore.Entity.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("LatLong")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int>("RegionId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("City");
+                });
+
             modelBuilder.Entity("SEContactManager.ApplicationCore.Entity.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("CityId");
+
                     b.Property<int>("Classification");
+
+                    b.Property<int>("Gender");
 
                     b.Property<DateTime?>("LastPurchase");
 
@@ -202,9 +228,26 @@ namespace SEContactManager.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("SEContactManager.ApplicationCore.Entity.Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Region");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -252,10 +295,23 @@ namespace SEContactManager.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("SEContactManager.ApplicationCore.Entity.City", b =>
+                {
+                    b.HasOne("SEContactManager.ApplicationCore.Entity.Region", "Region")
+                        .WithMany("Cities")
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("SEContactManager.ApplicationCore.Entity.Customer", b =>
                 {
+                    b.HasOne("SEContactManager.ApplicationCore.Entity.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("SEContactManager.ApplicationCore.Entity.ApplicationUser", "Owner")
-                        .WithMany("Customers")
+                        .WithMany("Customer")
                         .HasForeignKey("OwnerId");
                 });
 #pragma warning restore 612, 618

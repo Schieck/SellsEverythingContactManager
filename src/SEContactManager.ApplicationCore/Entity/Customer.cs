@@ -23,22 +23,22 @@ namespace SEContactManager.ApplicationCore.Entity
 
         [Display(Name = "Last Purchase")]
         public DateTime? LastPurchase { get; set; }
-        
+
         public string OwnerId { get; set; }
 
-        [Display(Name="Seller")]
+        [Display(Name = "Seller")]
         public virtual ApplicationUser Owner { get; set; }
 
-        public Classification Classification { get; set; }
-     }
 
-    public enum Classification
-    {
-        [Display(Name="VIP")]
-        VIP = 0,
-        [Display(Name = "Regular")]
-        Regular = 1,
-        [Display(Name = "Sporadic")]
-        Sporadic = 2
-    }
+        public int CityId { get; set; }
+
+        [Display(Name = "City")]
+        public virtual City City { get; set; }
+
+        [Required]
+        public Classification Classification { get; set; }
+
+        [Required]
+        public Gender Gender { get; set; }
+     }
 }

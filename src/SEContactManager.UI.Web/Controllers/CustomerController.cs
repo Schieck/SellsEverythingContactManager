@@ -10,30 +10,38 @@ using Microsoft.EntityFrameworkCore;
 using SEContactManager.ApplicationCore.Entity;
 using SEContactManager.ApplicationCore.Interfaces.Services;
 using SEContactManager.Infrastructure.Data;
+using SEContactManager.UI.Web.Models;
 
 namespace SEContactManager.UI.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly ICustomerService _customerService;
+        private readonly ICityService _cityService;
+        private readonly IRegionService _regionService;
+        private readonly UserManager<ApplicationUser> _userManagerService;
 
-        public CustomerController(ApplicationDbContext context, ICustomerService customerService)
+        public CustomerController(ICustomerService CustomerService, ICityService cityService, IRegionService regionService, UserManager<ApplicationUser> userManagerService)
         {
-            _customerService = customerService;
-            _context = context;
+            _customerService = CustomerService;
+            _regionService = regionService;
+            _cityService = cityService;
+            _userManagerService = userManagerService;
         }
 
-        // GET: Customers
+        // GET: Customer
         [Authorize]
         public IActionResult Index()
         {
-
+            ViewData["Cities"] = new SelectList(_cityService.FindAll().ToList(), "Id", "Name");
+            ViewData["Regions"] = new SelectList(_regionService.FindAll().ToList(), "Id", "Name");
+            
             var role = Enum.GetName(typeof(RoleTypes), RoleTypes.Administrator);
 
             if(User.IsInRole(role))
             {
-                return View(_customerService.FindAll());
+                ViewData["Sellers"] = new SelectList(_userManagerService.Users.ToList(), "Id", "Email");
+                return View(_customerService.FindAll());                
             }
             else
             {
@@ -41,7 +49,28 @@ namespace SEContactManager.UI.Web.Controllers
             }
         }
 
-        // GET: Customers/Details/5
+        // GET: Customer
+        [Authorize]
+        [HttpPost]
+        public IActionResult Index(CustomerSearch customerSearch)
+        {
+            ViewData["Cities"] = new SelectList(_cityService.FindAll().ToList(), "Id", "Name");
+            ViewData["Regions"] = new SelectList(_regionService.FindAll().ToList(), "Id", "Name");
+
+            var role = Enum.GetName(typeof(RoleTypes), RoleTypes.Administrator);
+
+            if (User.IsInRole(role))
+            {
+                ViewData["Sellers"] = new SelectList(_userManagerService.Users.ToList(), "Id", "Email");
+                return View(_customerService.FindBySearch(customerSearch));
+            }
+            else
+            {
+                return View(_customerService.FindBySearch(customerSearch, User));
+            }
+        }
+
+        // GET: Customer/Details/5
         [Authorize]
         public IActionResult Details(int id)
         {
@@ -65,19 +94,21 @@ namespace SEContactManager.UI.Web.Controllers
             return View(customer);
         }
 
-        // GET: Customers/Create
+        // GET: Customer/Create
         public IActionResult Create()
         {
+            ViewData["Cities"] = new SelectList(_cityService.FindAll().ToList(), "Id", "Name");
+            
             return View();
         }
 
-        // POST: Customers/Create
+        // POST: Customer/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Name,Phone,LastPurchase,Classification")] Customer customer)
+        public IActionResult Create(Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -87,9 +118,11 @@ namespace SEContactManager.UI.Web.Controllers
             return View(customer);
         }
 
-        // GET: Customers/Edit/5
+        // GET: Customer/Edit/5
         public IActionResult Edit(int id)
         {
+            ViewData["Cities"] = new SelectList(_cityService.FindAll().ToList(), "Id", "Name");
+
             var role = Enum.GetName(typeof(RoleTypes), RoleTypes.Administrator);
             var customer = new Customer();
 
@@ -109,12 +142,12 @@ namespace SEContactManager.UI.Web.Controllers
             return View(customer);
         }
 
-        // POST: Customers/Edit/5
+        // POST: Customer/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name,Phone,LastPurchase,Classification")] Customer customer)
+        public IActionResult Edit(int id, Customer customer)
         {
             if (id != customer.Id)
             {
@@ -152,7 +185,7 @@ namespace SEContactManager.UI.Web.Controllers
             return View(customer);
         }
 
-        // GET: Customers/Delete/5
+        // GET: Customer/Delete/5
         public IActionResult Delete(int id)
         {
 
@@ -176,7 +209,7 @@ namespace SEContactManager.UI.Web.Controllers
             return View(customer);
         }
 
-        // POST: Customers/Delete/5
+        // POST: Customer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

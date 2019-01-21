@@ -20,5 +20,8 @@ namespace SEContactManager.ApplicationCore.Interfaces.Services
         Customer FindById(int id, ClaimsPrincipal claimsPrincipal);
         IEnumerable<Customer> Find(Expression<Func<Customer, bool>> filter, ClaimsPrincipal claimsPrincipal);
         IEnumerable<Customer> FindAll(ClaimsPrincipal claimsPrincipal);
+
+        IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch, ClaimsPrincipal claimsPrincipal);
+        IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch);
     }
 }

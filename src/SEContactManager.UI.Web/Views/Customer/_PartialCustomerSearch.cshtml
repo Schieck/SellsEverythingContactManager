@@ -1,0 +1,64 @@
+﻿@using SEContactManager.ApplicationCore.Entity
+@model CustomerSearch
+
+
+        <div style="width: inherit; text-align:center; padding:15pt;" class="mdl-card mdl-shadow--2dp">
+            <form action="/Customer/" method="post">
+
+                <div class="mdl-textfield mdl-js-textfield text-left">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="mdl-textfield__input" />
+                </div>
+
+                <span asp-validation-for="Name" class="text-danger"></span>
+
+                <div class="mdl-textfield mdl-js-textfield text-left">
+                    <label asp-for="Gender"></label>
+                    <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control"></select>
+                </div>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+
+                <div class="mdl-textfield mdl-js-textfield text-left">
+                    <label>City</label>
+                    <select asp-for="CityId" asp-items="ViewBag.Cities" class="form-control"></select>
+                </div>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+                <div class="mdl-textfield mdl-js-textfield text-left">
+                    <label>Region</label>
+                    <select asp-for="RegionId" asp-items="ViewBag.Regions" class="form-control"></select>
+                </div>
+                <span asp-validation-for="RegionId" class="text-danger"></span>
+
+                <div class="mdl-textfield mdl-js-textfield text-left">
+                    <label asp-for="LastPurchase"></label>
+                    <input asp-for="LastPurchase" class="mdl-textfield__input" />
+                </div>
+                <span asp-validation-for="LastPurchase" class="text-danger"></span>
+
+                <div class="mdl-textfield mdl-js-textfield text-left">
+                    <label asp-for="Until"></label>
+                    <input asp-for="Until" class="mdl-textfield__input" />
+                </div>
+                <span asp-validation-for="Until" class="text-danger"></span>
+
+                @if (User.IsInRole(Enum.GetName(typeof(RoleTypes), RoleTypes.Administrator)))
+                {
+                    <div class="mdl-textfield mdl-js-textfield text-left">
+                        <label>Seller</label>
+                        <select asp-for="SellerId" asp-items="ViewBag.Sellers" class="form-control"></select>
+                    </div>
+                    <span asp-validation-for="SellerId" class="text-danger"></span>
+                }
+
+                <div class="mdl-textfield mdl-js-textfield text-left">
+                    <label asp-for="Classification"></label>
+                    <select asp-for="Classification" asp-items="Html.GetEnumSelectList<Classification>()" class="form-control"></select>
+                </div>
+                <span asp-validation-for="Classification" class="text-danger"></span>
+
+
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-button--primary">Search <i class="material-icons">location_searching</i></button>
+                <button type="reset" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-button--primary">Clean <i class="material-icons">clear</i></button>
+
+            </form>
+        </div>

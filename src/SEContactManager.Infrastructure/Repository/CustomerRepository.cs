@@ -23,21 +23,30 @@ namespace SEContactManager.Infrastructure.Repository
             Expression<Func<Customer, bool>> ownerFilter = model => model.Owner.Id == owner.Id;
             var finalFilter = Expression.Lambda<Func<Customer, bool>>(Expression.And(ownerFilter, filter));
 
-            return Find(finalFilter);
+            return _dbContext.Customer.Include(model => model.Owner)
+                                      .Include(model => model.City)
+                                      .Include(model => model.City.Region)
+                                      .Where(finalFilter);
         }
 
         public IEnumerable<Customer> FindAll(ApplicationUser owner)
         {
             Expression<Func<Customer, bool>> ownerFilter = model => model.Owner.Id == owner.Id;
 
-            return Find(ownerFilter);
+            return _dbContext.Customer.Include(model => model.Owner)
+                                      .Include(model => model.City)
+                                      .Include(model => model.City.Region)
+                                      .Where(ownerFilter);
         }
 
         public Customer FindById(int id, ApplicationUser owner)
         {
             Expression<Func<Customer, bool>> filter = model => model.Owner.Id == owner.Id && model.Id == id;
 
-            return _dbContext.Customers.Include(model => model.Owner).Where(filter).FirstOrDefault();
+            return _dbContext.Customer.Include(model => model.Owner)
+                                      .Include(model => model.City)
+                                      .Include(model => model.City.Region)
+                                      .Where(filter).FirstOrDefault();
         }
 
         public IEnumerable<Customer> FindByLastPruchase(DateTime from, DateTime to)
@@ -53,8 +62,8 @@ namespace SEContactManager.Infrastructure.Repository
         public IEnumerable<Customer> FindByLastPruchase(DateTime from, DateTime to, ApplicationUser owner)
         {
             Expression<Func<Customer, bool>> filter = model => model.Owner.Id == owner.Id &&
-                                                                    model.LastPurchase > from  &&
-                                                                    model.LastPurchase < to;           
+                                                                    model.LastPurchase > from &&
+                                                                    model.LastPurchase < to;
 
             return Find(filter);
         }
@@ -87,22 +96,91 @@ namespace SEContactManager.Infrastructure.Repository
 
         override public IEnumerable<Customer> FindAll()
         {
-            return _dbContext.Customers
-                .Include(model => model.Owner);
+            return _dbContext.Customer
+                .Include(model => model.Owner)
+                .Include(model => model.City)
+                .Include(model => model.City.Region);
         }
 
         override public Customer FindById(int id)
         {
-            return _dbContext.Customers.Include(model => model.Owner).Where(model => model.Id == id).FirstOrDefault();
+            return _dbContext.Customer.Include(model => model.Owner).Where(model => model.Id == id).FirstOrDefault();
         }
 
         override public void Update(Customer entity)
         {
             if (entity.OwnerId == null)
-                entity.OwnerId = _dbContext.Customers.AsNoTracking().Where(model => model.Id == entity.Id).FirstOrDefault().OwnerId;
+                entity.OwnerId = _dbContext.Customer.AsNoTracking().Where(model => model.Id == entity.Id).FirstOrDefault().OwnerId;
 
             _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.SaveChangesAsync();
+        }
+
+        public IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch, ApplicationUser owner)
+        {
+            var result = _dbContext.Customer.AsQueryable().Where(model => model.OwnerId == owner.Id && model.Owner.Id == owner.Id);
+
+            if (!string.IsNullOrEmpty(customerSearch.Name))
+                result = result.Where(x => x.Name.Contains(customerSearch.Name));
+            if (customerSearch.Gender != null)
+                result = result.Where(x => x.Gender == customerSearch.Gender);
+            if (customerSearch.Classification != null)
+                result = result.Where(x => x.Classification == customerSearch.Classification);
+            if (customerSearch.CityId != null)
+                result = result.Where(x => x.City.Id == customerSearch.CityId);
+            if (customerSearch.LastPurchase != null)
+                result = result.Where(x => x.LastPurchase >= customerSearch.LastPurchase);
+            if (customerSearch.Until != null)
+                result = result.Where(x => x.LastPurchase <= customerSearch.Until);
+            if (customerSearch.RegionId != null)
+                if (_dbContext.City.Find(customerSearch.CityId).RegionId != customerSearch.RegionId) { }
+                else
+                {
+                    result = result.Where(x => x.City.RegionId == customerSearch.RegionId);
+                }
+
+
+            result
+                .Include(model => model.Owner)
+                .Include(model => model.City)
+                .Include(model => model.City.Region);
+            return result;
+        }
+
+        public IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch)
+        {
+
+            var result = _dbContext.Customer.AsQueryable();
+
+            if (!string.IsNullOrEmpty(customerSearch.Name))
+                result = result.Where(x => x.Name.Contains(customerSearch.Name));
+            if (customerSearch.Gender != null)
+                result = result.Where(x => x.Gender == customerSearch.Gender);
+            if (customerSearch.Classification != null)
+                result = result.Where(x => x.Classification == customerSearch.Classification);
+            if (customerSearch.CityId != null)
+                result = result.Where(x => x.City.Id == customerSearch.CityId);
+            if (customerSearch.LastPurchase != null)
+                result = result.Where(x => x.LastPurchase >= customerSearch.LastPurchase);
+            if (customerSearch.Until != null)
+                result = result.Where(x => x.LastPurchase <= customerSearch.Until);
+            if (customerSearch.RegionId != null)
+                if (_dbContext.City.Find(customerSearch.CityId).RegionId != customerSearch.RegionId)
+                {
+                    result = result.Where(x => x.City.RegionId == customerSearch.RegionId || x.CityId == customerSearch.CityId);
+                }
+                else
+                {
+                    result = result.Where(x => x.City.RegionId == customerSearch.RegionId);
+                }
+            if (customerSearch.SellerId != null)
+                result = result.Where(x => x.OwnerId == customerSearch.SellerId);
+
+            result
+                .Include(model => model.Owner)
+                .Include(model => model.City)
+                .Include(model => model.City.Region);
+            return result;
         }
     }
 

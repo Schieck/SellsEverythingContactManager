@@ -1,11 +1,7 @@
 ﻿
 @using SEContactManager.ApplicationCore.Entity
 
-@model SEContactManager.ApplicationCore.Entity.Customer
-
-@{
-    ViewData["Title"] = "Create";
-}
+@model Customer
 
 <div style="width:100%; height:100%;">
     <div style="padding:15pt;" class="col-md-offset-3 col-md-6">
@@ -24,6 +20,22 @@
                     <br />
 
                     <div class="mdl-textfield mdl-js-textfield text-left">
+                        <label asp-for="Gender"></label>
+                        <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control"></select>
+                    </div>
+                    <br />
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                    <br />
+
+                    <div class="mdl-textfield mdl-js-textfield text-left">
+                        <label asp-for="City"></label>
+                        <select asp-for="CityId" asp-items="ViewBag.Cities" class="form-control"></select>
+                    </div>
+                    <br />
+                    <span asp-validation-for="CityId" class="text-danger"></span>
+                    <br />
+                   
+                    <div class="mdl-textfield mdl-js-textfield text-left">
                         <label asp-for="Phone"></label>
                         <input asp-for="Phone" class="mdl-textfield__input" />
                     </div>
@@ -38,7 +50,6 @@
                     <br />
                     <span asp-validation-for="LastPurchase" class="text-danger"></span>
                     <br />
-
 
                     <div class="mdl-textfield mdl-js-textfield text-left">
                         <label asp-for="Classification"></label>
@@ -59,4 +70,5 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
 }

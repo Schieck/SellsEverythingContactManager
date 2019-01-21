@@ -137,5 +137,27 @@ namespace SEContactManager.ApplicationCore.Services
         {            
             return _customerRepository.FindAll();
         }
+
+        public IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch, ClaimsPrincipal claimsPrincipal)
+        {
+            if (customerSearch == null)
+                return FindAll(claimsPrincipal);
+
+            var userId = _userManager.GetUserId(claimsPrincipal);
+            ApplicationUser owner = new ApplicationUser()
+            {
+                Id = userId
+            };
+
+            return _customerRepository.FindBySearch(customerSearch, owner);
+        }
+
+        public IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch)
+        {
+            if (customerSearch == null)
+                return FindAll();
+
+            return _customerRepository.FindBySearch(customerSearch);
+        }
     }
 }

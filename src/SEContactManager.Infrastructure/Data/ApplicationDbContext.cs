@@ -15,12 +15,16 @@ namespace SEContactManager.Infrastructure.Data
         {
         }
 
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Customer> Customer { get; set; }
+        public DbSet<Region> Region { get; set; }
+        public DbSet<City> City { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new CustomerMap());
-        
+            builder.ApplyConfiguration(new RegionMap());
+            builder.ApplyConfiguration(new CityMap());
+
             base.OnModelCreating(builder);
         }
     }

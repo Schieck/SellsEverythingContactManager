@@ -20,5 +20,8 @@ namespace SEContactManager.ApplicationCore.Interfaces.Repositories
         IEnumerable<Customer> FindAll(ApplicationUser owner);
         Customer FindById(int id, ApplicationUser owner);
         IEnumerable<Customer> Find(Expression<Func<Customer, bool>> filter, ApplicationUser owner);
+
+        IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch, ApplicationUser owner);
+        IEnumerable<Customer> FindBySearch(CustomerSearch customerSearch);
     }
 }

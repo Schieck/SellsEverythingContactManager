@@ -48,6 +48,19 @@ namespace SEContactManager.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Region",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(20)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Region", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -154,7 +167,28 @@ namespace SEContactManager.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "City",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(20)", nullable: false),
+                    LatLong = table.Column<string>(nullable: false),
+                    RegionId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_City", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_City_Region_RegionId",
+                        column: x => x.RegionId,
+                        principalTable: "Region",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customer",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -163,13 +197,21 @@ namespace SEContactManager.Infrastructure.Migrations
                     Phone = table.Column<string>(type: "varchar(50)", nullable: false),
                     LastPurchase = table.Column<DateTime>(nullable: true),
                     OwnerId = table.Column<string>(nullable: true),
-                    Classification = table.Column<int>(nullable: false)
+                    CityId = table.Column<int>(nullable: false),
+                    Classification = table.Column<int>(nullable: false),
+                    Gender = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Customer", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Customers_AspNetUsers_OwnerId",
+                        name: "FK_Customer_City_CityId",
+                        column: x => x.CityId,
+                        principalTable: "City",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Customer_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -216,8 +258,18 @@ namespace SEContactManager.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_OwnerId",
-                table: "Customers",
+                name: "IX_City_RegionId",
+                table: "City",
+                column: "RegionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customer_CityId",
+                table: "Customer",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customer_OwnerId",
+                table: "Customer",
                 column: "OwnerId");
         }
 
@@ -239,13 +291,19 @@ namespace SEContactManager.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Customer");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "City");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Region");
         }
     }
 }

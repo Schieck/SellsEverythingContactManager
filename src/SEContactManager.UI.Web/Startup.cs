@@ -95,6 +95,12 @@ namespace SEContactManager.UI.Web
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICustomerService, CustomerService>();
 
+            services.AddScoped<IRegionRepository, RegionRepository>();
+            services.AddScoped<IRegionService, RegionService>();
+
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<ICityService, CityService>();
+
             #endregion Dependency Injection Configuration
 
         }
@@ -127,6 +133,8 @@ namespace SEContactManager.UI.Web
             });
 
             CreateRoles(serviceProvider).Wait();
+
+            CreateRegions(serviceProvider);
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
@@ -218,6 +226,41 @@ namespace SEContactManager.UI.Web
                     }
                 }
             }
+        }
+
+        private void CreateRegions(IServiceProvider serviceProvider)
+        {
+            var _regionService = serviceProvider.GetRequiredService<IRegionService>();
+            var _cityService = serviceProvider.GetRequiredService<ICityService>();
+
+            if (!(_regionService.Find(region => region.Name == "Rio Grande do Sul").Count() > 0))
+                _regionService.Add(new Region()
+                {
+                    Name = "Rio Grande do Sul"
+                });
+
+            if (!(_regionService.Find(region => region.Name == "São Paulo").Count() > 0))
+                _regionService.Add(new Region()
+                {
+                    Name = "São Paulo"
+                });
+
+
+            if (!(_regionService.Find(region => region.Name == "Curitiba").Count() > 0))
+                _regionService.Add(new Region()
+                {
+                    Name = "Curitiba"
+                });
+
+            var regionRS = _regionService.Find(region => region.Name == "Rio Grande do Sul").FirstOrDefault();
+
+            if (!(_cityService.Find(city => city.Name == "Porto Alegre").Count() > 0))
+                _cityService.Add(new City()
+                {
+                    Name = "Porto Alegre",
+                    RegionId = regionRS.Id,
+                    LatLong = "-30.1087957,-51.3172272"
+                });
         }
 
         internal class DefaultUserModel
